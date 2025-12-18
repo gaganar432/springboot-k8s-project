@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        IMAGE = "gaganar432/springboot-k8s-app"
+        IMAGE = "gaganaraj2001/springboot-k8s-app"
+
     }
 
     stages {
