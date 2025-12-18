@@ -7,13 +7,6 @@ pipeline {
 
     stages {
 
-        stage('Clone Repo') {
-            steps {
-                git credentialsId: 'github-creds',
-                    url: 'https://github.com/gaganar432/springboot-k8s-project.git'
-            }
-        }
-
         stage('Build JAR') {
             steps {
                 dir('sak_group_spring_app-main') {
