@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE = "gaganar432/springboot-k8s-app"
+    }
+
+    stages {
+
+        stage('Clone Repo') {
+            steps {
+                git credentialsId: 'github-creds',
+                    url: 'https://github.com/gaganar432/springboot-k8s-project.git'
+            }
+        }
+
+        stage('Build JAR') {
+            steps {
+                dir('sak_group_spring_app-main') {
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                dir('sak_group_spring_app-main') {
+                    sh 'docker build -t $IMAGE:latest .'
+                }
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                withDockerRegistry([credentialsId: 'dockerhub-creds']) {
+                    sh 'docker push $IMAGE:latest'
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl rollout restart deployment/springboot-app -n dev'
+            }
+        }
+    }
+}
